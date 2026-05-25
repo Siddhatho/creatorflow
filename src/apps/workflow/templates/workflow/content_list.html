@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">My Content</h1>
+    <a href="{% url 'workflow:content_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded">+ New</a>
+  </div>
+  {% for c in contents %}
+  <div class="border rounded p-4 mb-3 flex justify-between items-center">
+    <div>
+      <p class="font-semibold">{{ c.title }}</p>
+      <span class="text-sm text-gray-500">{{ c.status|upper }}</span>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'workflow:content_detail' c.pk %}" class="text-blue-500 text-sm">View</a>
+      <a href="{% url 'workflow:content_edit' c.pk %}" class="text-yellow-500 text-sm">Edit</a>
+      <a href="{% url 'workflow:content_advance' c.pk %}" class="text-green-500 text-sm">Advance →</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-gray-400">No content yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

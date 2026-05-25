@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+
+  <!-- Status Counters -->
+  <div class="grid grid-cols-5 gap-4 mb-8">
+    {% for status, count in status_counts.items %}
+    <div class="border rounded p-4 text-center">
+      <p class="text-2xl font-bold">{{ count }}</p>
+      <p class="text-sm text-gray-500 capitalize">{{ status }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Recent Content Table -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-lg font-semibold">Recent Content</h2>
+      <a href="{% url 'workflow:content_list' %}" class="text-blue-500 text-sm">View All</a>
+    </div>
+    <table class="w-full border rounded text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="text-left px-4 py-2">Title</th>
+          <th class="text-left px-4 py-2">Campaign</th>
+          <th class="text-left px-4 py-2">Platform</th>
+          <th class="text-left px-4 py-2">Status</th>
+          <th class="text-left px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in recent_contents %}
+        <tr class="border-t">
+          <td class="px-4 py-2">{{ c.title }}</td>
+          <td class="px-4 py-2">{{ c.campaign|default:"—" }}</td>
+          <td class="px-4 py-2">{{ c.platform|default:"—" }}</td>
+          <td class="px-4 py-2">
+            <span class="px-2 py-1 rounded text-xs
+              {% if c.status == 'draft' %}bg-gray-200
+              {% elif c.status == 'review' %}bg-yellow-200
+              {% elif c.status == 'approved' %}bg-blue-200
+              {% elif c.status == 'scheduled' %}bg-purple-200
+              {% elif c.status == 'published' %}bg-green-200{% endif %}">
+              {{ c.status|upper }}
+            </span>
+          </td>
+          <td class="px-4 py-2 flex gap-2">
+            <a href="{% url 'workflow:content_detail' c.pk %}" class="text-blue-500">View</a>
+            <a href="{% url 'workflow:content_advance' c.pk %}" class="text-green-500">Advance</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="px-4 py-3 text-gray-400">No content yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Campaigns -->
+  <div>
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-lg font-semibold">Active Campaigns</h2>
+      <a href="{% url 'workflow:campaign_list' %}" class="text-blue-500 text-sm">View All</a>
+    </div>
+    {% for camp in campaigns %}
+    <div class="border rounded p-3 mb-2 flex justify-between items-center">
+      <div>
+        <p class="font-semibold">{{ camp.name }}</p>
+        <p class="text-sm text-gray-400">{{ camp.start_date }} → {{ camp.end_date }}</p>
+      </div>
+      <a href="{% url 'workflow:campaign_detail' camp.pk %}" class="text-blue-500 text-sm">View</a>
+    </div>
+    {% empty %}
+    <p class="text-gray-400">No campaigns yet.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

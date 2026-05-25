@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6 max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold">{{ content.title }}</h1>
+  <p class="text-gray-500 mb-2">Status: <strong>{{ content.status|upper }}</strong></p>
+  <p class="mb-4">{{ content.body }}</p>
+  <h2 class="font-semibold mb-2">Status History</h2>
+  {% for h in history %}
+  <div class="text-sm text-gray-600 border-l-2 pl-3 mb-1">
+    {{ h.from_status|default:"—" }} → {{ h.to_status }} by {{ h.changed_by }} at {{ h.changed_at }}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

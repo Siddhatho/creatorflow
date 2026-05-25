@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-1">{{ campaign.name }}</h1>
+  <p class="text-gray-500 mb-1">{{ campaign.start_date }} → {{ campaign.end_date }}</p>
+  <p class="text-gray-400 mb-4">{{ campaign.description }}</p>
+
+  <!-- Platform Filter -->
+  <div class="flex gap-2 mb-4">
+    <a href="?" class="text-sm px-3 py-1 rounded border {% if not selected_platform %}bg-blue-600 text-white{% endif %}">All</a>
+    {% for p in platforms %}
+    <a href="?platform={{ p.pk }}" class="text-sm px-3 py-1 rounded border {% if selected_platform == p.pk|stringformat:'s' %}bg-blue-600 text-white{% endif %}">{{ p.name }}</a>
+    {% endfor %}
+  </div>
+
+  <!-- Content List -->
+  {% for c in contents %}
+  <div class="border rounded p-3 mb-2 flex justify-between">
+    <div>
+      <p class="font-semibold">{{ c.title }}</p>
+      <p class="text-sm text-gray-500">{{ c.status|upper }} — {{ c.platform }}</p>
+    </div>
+    <a href="{% url 'workflow:content_detail' c.pk %}" class="text-blue-500 text-sm">View</a>
+  </div>
+  {% empty %}
+  <p class="text-gray-400">No content in this campaign.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-6xl font-bold text-primary">403</h1>
+        <p class="text-xl text-white mt-4">Access Denied</p>
+        <p class="text-gray-400 mt-2">You don't have permission to view this page.</p>
+        <a href="/" class="mt-6 inline-block bg-primary px-6 py-2.5 rounded-lg hover:bg-secondary transition">
+            Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}
