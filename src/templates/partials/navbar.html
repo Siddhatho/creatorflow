@@ -1,0 +1,17 @@
+<nav class="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-border h-16 flex items-center justify-between px-6">
+    
+    <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-sm">CF</div>
+        <span class="font-semibold text-lg">CreatorFlow OS</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-400">{% if user.is_authenticated %}{{ user.username }}{% endif %}</span>
+        {% if user.is_authenticated %}
+            <a href="/users/logout/" class="text-sm bg-border px-3 py-1 rounded-lg hover:bg-primary transition">Logout</a>
+        {% else %}
+            <a href="/users/login/" class="text-sm bg-primary px-3 py-1 rounded-lg hover:bg-secondary transition">Login</a>
+        {% endif %}
+    </div>
+
+</nav>
