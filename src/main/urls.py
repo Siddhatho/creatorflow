@@ -27,5 +27,5 @@ urlpatterns = [
     path('workflow/', include('apps.workflow.urls')),
     path('collaboration/', include('apps.collaboration.urls')),
     path('ai/', include('apps.ai_engine.urls')),
-    path('analytics/', include('apps.analytics.urls')),
+    path('analytics/', include('apps.analytics.urls')), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
