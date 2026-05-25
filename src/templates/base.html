@@ -22,16 +22,6 @@
     </script>
 </head>
 <body class="bg-dark text-white min-h-screen">
-
-    {% include 'partials/navbar.html' %}
-
-    <div class="flex">
-        {% include 'partials/sidebar.html' %}
-
-        <main class="flex-1 p-6 ml-64">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
-
+    {% block content %}{% endblock %}
 </body>
 </html>
