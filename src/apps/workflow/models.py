@@ -39,6 +39,8 @@ class Content(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     scheduled_at = models.DateTimeField(null=True, blank=True)
+    hashtags = models.TextField(blank=True)
+    seo_tags = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -56,3 +58,6 @@ class ContentStatus(models.Model):
 
     def __str__(self):
         return f"{self.content.title}: {self.from_status} → {self.to_status}"
+    
+hashtags = models.TextField(blank=True)
+seo_tags = models.TextField(blank=True)

@@ -35,3 +35,21 @@ class ResponseParser:
     @staticmethod
     def parse_caption(response: str) -> str:
         return response.strip()
+    
+    @staticmethod
+    def parse_adapted_content(response: str) -> str:
+        return response.strip()
+    
+    @staticmethod
+    def parse_hashtags(response: str) -> dict:
+        try:
+            lines = response.strip().split('\n')
+            hashtags, seo_tags = '', ''
+            for line in lines:
+                if line.startswith('HASHTAGS:'):
+                    hashtags = line.replace('HASHTAGS:', '').strip()
+                elif line.startswith('SEO_TAGS:'):
+                    seo_tags = line.replace('SEO_TAGS:', '').strip()
+            return {'hashtags': hashtags, 'seo_tags': seo_tags}
+        except Exception:
+            return {'hashtags': '', 'seo_tags': response}

@@ -11,3 +11,4 @@ class ContentAdmin(admin.ModelAdmin):
     list_display = ['title', 'creator', 'campaign', 'platform', 'status', 'created_at']
     list_filter = ['status', 'platform', 'campaign']
     search_fields = ['title']
+    readonly_fields = ['hashtags', 'seo_tags']

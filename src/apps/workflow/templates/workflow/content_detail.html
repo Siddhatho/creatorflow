@@ -1,5 +1,4 @@
-{% extends "base.html" %} 
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="p-6 max-w-2xl mx-auto">
   <h1 class="text-2xl font-bold">{{ content.title }}</h1>
   <p class="text-gray-500 mb-2">
@@ -13,6 +12,7 @@
     {{ h.changed_at }}
   </div>
   {% endfor %}
+
   <!-- AI Caption Generator -->
   <div class="mt-6 border rounded p-4">
     <h2 class="font-semibold mb-2">AI Caption Generator</h2>
@@ -29,19 +29,115 @@
   </div>
 
   <script>
-  function generateCaption() {
-    const url = "/ai/caption/{{ content.pk }}/";
-    fetch(url, {
-      method: 'POST',
-      headers: {'X-CSRFToken': '{{ csrf_token }}'},
-    })
-    .then(r => r.json())
-    .then(data => {
-      console.log(data);
-      document.getElementById('caption-text').innerText = data.caption || JSON.stringify(data);
-      document.getElementById('caption-result').classList.remove('hidden');
-    });
-  }
+    function generateCaption() {
+      const url = "/ai/caption/{{ content.pk }}/";
+      fetch(url, {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          console.log(data);
+          document.getElementById("caption-text").innerText =
+            data.caption || JSON.stringify(data);
+          document.getElementById("caption-result").classList.remove("hidden");
+        });
+    }
+  </script>
+
+  <!-- Platform Adaptation Engine -->
+  <div class="mt-6 border rounded p-4">
+    <h2 class="font-semibold mb-3">Platform Adaptation Engine</h2>
+    <div class="flex gap-2 mb-3 flex-wrap">
+      <button
+        onclick="adaptContent('youtube')"
+        class="bg-red-600 text-white px-3 py-1 rounded text-sm"
+      >
+        YouTube
+      </button>
+      <button
+        onclick="adaptContent('instagram')"
+        class="bg-pink-600 text-white px-3 py-1 rounded text-sm"
+      >
+        Instagram
+      </button>
+      <button
+        onclick="adaptContent('linkedin')"
+        class="bg-blue-700 text-white px-3 py-1 rounded text-sm"
+      >
+        LinkedIn
+      </button>
+      <button
+        onclick="adaptContent('twitter')"
+        class="bg-sky-500 text-white px-3 py-1 rounded text-sm"
+      >
+        X Thread
+      </button>
+    </div>
+    <div id="adapt-result" class="hidden">
+      <p class="font-semibold text-sm mb-1">
+        Adapted for <span id="adapt-platform"></span>:
+      </p>
+      <p
+        id="adapt-text"
+        class="border rounded p-3 bg-gray-50 text-gray-700 whitespace-pre-wrap"
+      ></p>
+    </div>
+  </div>
+
+  <script>
+    function adaptContent(platform) {
+      const url = "/ai/adapt/{{ content.pk }}/";
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `platform=${platform}`,
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          document.getElementById("adapt-platform").innerText = data.platform;
+          document.getElementById("adapt-text").innerText = data.adapted;
+          document.getElementById("adapt-result").classList.remove("hidden");
+        });
+    }
+  </script>
+
+  <!-- Hashtag Engine -->
+  <div class="mt-6 border rounded p-4">
+    <h2 class="font-semibold mb-3">Hashtag & SEO Engine</h2>
+    <button
+      onclick="generateHashtags()"
+      class="bg-green-600 text-white px-4 py-2 rounded text-sm"
+    >
+      Generate Hashtags
+    </button>
+    <div id="hashtag-result" class="hidden mt-3">
+      <p class="text-sm font-semibold mb-1">Hashtags:</p>
+      <p
+        id="hashtag-text"
+        class="border rounded p-3 bg-gray-50 text-gray-700 mb-3"
+      ></p>
+      <p class="text-sm font-semibold mb-1">SEO Tags:</p>
+      <p id="seo-text" class="border rounded p-3 bg-gray-50 text-gray-700"></p>
+    </div>
+  </div>
+
+  <script>
+    function generateHashtags() {
+      fetch("/ai/hashtags/{{ content.pk }}/", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          document.getElementById("hashtag-text").innerText = data.hashtags;
+          document.getElementById("seo-text").innerText = data.seo_tags;
+          document.getElementById("hashtag-result").classList.remove("hidden");
+        });
+    }
   </script>
 </div>
 {% endblock %}

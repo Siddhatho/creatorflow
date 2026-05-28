@@ -35,3 +35,29 @@ def generate_caption(request, content_id):
     raw = service.generate(prompt)
     caption = ResponseParser.parse_caption(raw)
     return JsonResponse({'caption': caption})
+
+@login_required
+@require_POST
+def adapt_content(request, content_id):
+    content = get_object_or_404(Content, pk=content_id, creator=request.user)
+    target_platform = request.POST.get('platform', 'instagram')
+    service = AIService()
+    prompt = PromptManager.adapt_for_platform(content.body, target_platform)
+    raw = service.generate(prompt)
+    adapted = ResponseParser.parse_adapted_content(raw)
+    return JsonResponse({'adapted': adapted, 'platform': target_platform})
+
+@login_required
+@require_POST
+def generate_hashtags(request, content_id):
+    content = get_object_or_404(Content, pk=content_id, creator=request.user)
+    platform = content.platform.name if content.platform else "General"
+    service = AIService()
+    prompt = PromptManager.generate_hashtags(content.title, content.body, platform)
+    raw = service.generate(prompt)
+    result = ResponseParser.parse_hashtags(raw)
+    # save to content
+    content.hashtags = result['hashtags']
+    content.seo_tags = result['seo_tags']
+    content.save()
+    return JsonResponse(result)
