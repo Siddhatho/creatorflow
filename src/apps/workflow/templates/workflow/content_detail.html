@@ -1,14 +1,47 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% block content %}
 <div class="p-6 max-w-2xl mx-auto">
   <h1 class="text-2xl font-bold">{{ content.title }}</h1>
-  <p class="text-gray-500 mb-2">Status: <strong>{{ content.status|upper }}</strong></p>
+  <p class="text-gray-500 mb-2">
+    Status: <strong>{{ content.status|upper }}</strong>
+  </p>
   <p class="mb-4">{{ content.body }}</p>
   <h2 class="font-semibold mb-2">Status History</h2>
   {% for h in history %}
   <div class="text-sm text-gray-600 border-l-2 pl-3 mb-1">
-    {{ h.from_status|default:"—" }} → {{ h.to_status }} by {{ h.changed_by }} at {{ h.changed_at }}
+    {{ h.from_status|default:"—" }} → {{ h.to_status }} by {{ h.changed_by }} at
+    {{ h.changed_at }}
   </div>
   {% endfor %}
+  <!-- AI Caption Generator -->
+  <div class="mt-6 border rounded p-4">
+    <h2 class="font-semibold mb-2">AI Caption Generator</h2>
+    <button
+      onclick="generateCaption()"
+      class="bg-purple-600 text-white px-4 py-2 rounded"
+    >
+      Generate Caption
+    </button>
+    <div id="caption-result" class="mt-3 text-gray-700 hidden">
+      <p class="font-semibold text-sm mb-1">Generated Caption:</p>
+      <p id="caption-text" class="border rounded p-3 bg-gray-50"></p>
+    </div>
+  </div>
+
+  <script>
+  function generateCaption() {
+    const url = "/ai/caption/{{ content.pk }}/";
+    fetch(url, {
+      method: 'POST',
+      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+    })
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+      document.getElementById('caption-text').innerText = data.caption || JSON.stringify(data);
+      document.getElementById('caption-result').classList.remove('hidden');
+    });
+  }
+  </script>
 </div>
 {% endblock %}

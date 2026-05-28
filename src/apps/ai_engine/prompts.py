@@ -33,3 +33,18 @@ Reply with one word: YES or NO, then one sentence reason.
 Title: {title}
 Body: {body}
 """
+    
+    @staticmethod
+    def generate_caption(description: str, platform: str) -> str:
+        return f"""
+You are a social media expert. Write an optimized caption for {platform}.
+
+Content description: {description}
+
+Rules:
+- Engaging and platform-appropriate
+- Include relevant hashtags
+- Max 300 characters for Twitter, longer for others
+
+Return only the caption, nothing else.
+"""

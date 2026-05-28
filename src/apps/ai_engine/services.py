@@ -19,6 +19,8 @@ class AIService:
                     "messages": [{"role": "user", "content": prompt}]
                 }
             )
-            return response.json()['choices'][0]['message']['content']
+            data = response.json()
+            return data['choices'][0]['message']['content']
         except Exception as e:
-            return f"AI Error: {str(e)}"
+            import json
+            return f"AI Error: {str(e)} | Response: {response.text[:200]}"

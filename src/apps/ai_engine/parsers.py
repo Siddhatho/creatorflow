@@ -31,3 +31,7 @@ class ResponseParser:
             return {'ready': ready, 'reason': reason}
         except Exception:
             return {'ready': False, 'reason': response}
+    
+    @staticmethod
+    def parse_caption(response: str) -> str:
+        return response.strip()
