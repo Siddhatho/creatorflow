@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Content, ContentStatus
 from .forms import ContentForm
+from apps.collaboration.utils import log_activity
 
 # Create your views here.
 ALLOWED_TRANSITIONS = {
@@ -39,6 +40,7 @@ def content_edit(request, pk):
     form = ContentForm(request.POST or None, instance=content)
     if form.is_valid():
         form.save()
+        log_activity(content, request.user, 'edit', 'Content updated')
         messages.success(request, 'Content updated.')
         return redirect('workflow:content_list')
     return render(request, 'workflow/content_form.html', {'form': form, 'action': 'Edit'})

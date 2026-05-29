@@ -33,3 +33,23 @@ class ApprovalRequest(models.Model):
 
     def __str__(self):
         return f"{self.status} by {self.reviewer} on {self.content}"
+    
+class ActivityLog(models.Model):
+    EVENT_TYPES = [
+        ('edit', 'Edit'),
+        ('approval', 'Approval'),
+        ('ai_generation', 'AI Generation'),
+        ('comment', 'Comment'),
+        ('status_change', 'Status Change'),
+    ]
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='activities')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
+    detail = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.event_type} by {self.user} on {self.content}"

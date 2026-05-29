@@ -7,6 +7,7 @@ from .prompts import PromptManager
 from .parsers import ResponseParser
 from django.views.decorators.http import require_POST
 from apps.workflow.models import Content
+from apps.collaboration.utils import log_activity
 
 # Create your views here.
 @login_required
@@ -34,6 +35,7 @@ def generate_caption(request, content_id):
     prompt = PromptManager.generate_caption(content.body, platform)
     raw = service.generate(prompt)
     caption = ResponseParser.parse_caption(raw)
+    log_activity(content, request.user, 'ai_generation', 'Caption generated')
     return JsonResponse({'caption': caption})
 
 @login_required
@@ -45,6 +47,7 @@ def adapt_content(request, content_id):
     prompt = PromptManager.adapt_for_platform(content.body, target_platform)
     raw = service.generate(prompt)
     adapted = ResponseParser.parse_adapted_content(raw)
+    log_activity(content, request.user, 'ai_generation', f'Adapted for {target_platform}')
     return JsonResponse({'adapted': adapted, 'platform': target_platform})
 
 @login_required
@@ -60,4 +63,5 @@ def generate_hashtags(request, content_id):
     content.hashtags = result['hashtags']
     content.seo_tags = result['seo_tags']
     content.save()
+    log_activity(content, request.user, 'ai_generation', 'Hashtags & SEO tags generated')
     return JsonResponse(result)
