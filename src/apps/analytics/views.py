@@ -5,6 +5,10 @@ from django.views.decorators.http import require_POST
 from apps.workflow.models import Content
 from .scoring import compute_scores
 from .models import ContentScore
+from .scoring import compute_scores, predict_virality
+from .models import ContentScore, ViralityPrediction
+from .scoring import compute_scores, predict_virality, recommend_posting_time
+
 
 # Create your views here.
 
@@ -27,3 +31,20 @@ def score_summary(request):
         for s in scores
     ]
     return JsonResponse({'scores': data})
+
+@login_required
+@require_POST
+def refresh_virality(request, content_id):
+    content = get_object_or_404(Content, pk=content_id)
+    result = predict_virality(content)
+    ViralityPrediction.objects.update_or_create(
+        content=content,
+        defaults={'score': result['score'], 'label': result['label']}
+    )
+    return JsonResponse(result)
+
+@login_required
+def posting_time(request, content_id):
+    content = get_object_or_404(Content, pk=content_id)
+    result = recommend_posting_time(content)
+    return JsonResponse(result)
