@@ -140,4 +140,8 @@
     }
   </script>
 </div>
+
+{% include "collaboration/comments.html" with content=content comments=content.comments.all %}
+{% include "collaboration/approval.html" with content=content %}
+
 {% endblock %}
