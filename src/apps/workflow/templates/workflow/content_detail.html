@@ -139,6 +139,41 @@
         });
     }
   </script>
+
+  <!-- Scoring System -->
+  <div class="mt-4 flex gap-4">
+    <div class="border rounded p-3 text-center bg-white w-32">
+      <p class="text-xs text-gray-500">Engagement</p>
+      <p class="text-2xl font-bold text-blue-600">
+        {{ content.score.engagement_score|default:"—" }}
+      </p>
+    </div>
+    <div class="border rounded p-3 text-center bg-white w-32">
+      <p class="text-xs text-gray-500">Quality</p>
+      <p class="text-2xl font-bold text-green-600">
+        {{ content.score.quality_score|default:"—" }}
+      </p>
+    </div>
+    <div class="flex items-end">
+      <button onclick="refreshScores()" class="bg-gray-100 text-sm px-3 py-2 rounded hover:bg-gray-200">
+        🔄 Refresh Scores
+      </button>
+    </div>
+  </div>
+
+  <script>
+  function refreshScores() {
+    fetch("{% url 'analytics:refresh_scores' content.pk %}", {
+      method: "POST",
+      headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    })
+    .then(r => r.json())
+    .then(data => {
+      document.querySelectorAll('.text-blue-600')[0].innerText = data.engagement_score;
+      document.querySelectorAll('.text-green-600')[0].innerText = data.quality_score;
+    });
+  }
+  </script>
 </div>
 
 {% include "collaboration/comments.html" with content=content comments=content.comments.all %}
